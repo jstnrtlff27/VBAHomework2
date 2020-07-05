@@ -1,0 +1,85 @@
+Sub HW2Stocks()
+
+Dim ws As Worksheet
+Dim LastRow As Long
+Dim SumVolume As Double
+Dim Summary As Integer
+Dim Ticker As Integer
+Dim YearlyChange As Double
+Dim StartValue As Double
+Dim HighVolume As Double
+Dim LowPercent As Double
+Dim TopPercent As Double
+
+'Cell location of labels
+    For Each ws In Worksheets
+
+        ws.Range("i1").Value = "Ticker"
+        ws.Range("j1").Value = "Yearly Change"
+        ws.Range("k1").Value = "Percent Change"
+        ws.Range("l1").Value = "Total Stock Volume"
+        ws.Range("n2").Value = "Greatest Increase"
+        ws.Range("n3").Value = "Greatest Decrease"
+        ws.Range("n4").Value = "Greatest Total Volume"
+        ws.Range("o1").Value = "Ticker"
+
+'setting the sumvolume to 0
+
+    SumVolume = 0
+    Ticker = 0
+
+'last row into variable
+    LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    Summary = 2
+
+'if statement for each row
+
+For i = 2 To LastRow
+    If (ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value) Then
+        SumVolume = SumVolume + ws.Cells(i, 7).Value
+        StartValue = ws.Cells(i - Ticker, 3)
+        YearlyChange = ws.Cells(i, 6).Value - StartValue
+        ws.Range("i" & Summary).Value = ws.Cells(i, 1).Value
+        ws.Range("j" & Summary).Value = YearlyChange
+            If StartValue = 0 Then
+                Percentchange = 0
+            Else
+                Percentchange = YearlyChange / StartValue
+            End If
+        ws.Range("k" & Summary).Value = Percentchange
+        ws.Range("l" & Summary).Value = SumVolume
+        
+        Summary = Summary + 1
+        SumVolume = 0
+        Ticker = 0
+'Rows in colum that are equal
+        Else
+            SumVolume = SumVolume + ws.Cells(i, 7).Value
+            Ticker = Ticker + 1
+            End If
+
+'coloring the yearly change
+ ws.Range("j" & Summary).Value = YearlyChange
+ 
+ 
+    If YearlyChange >= 0 Then
+        ws.Range("j" & Summary).Interior.ColorIndex = 4
+    Else
+        ws.Range("j" & Summary).Interior.ColorIndex = 3
+    End If
+    
+    Next i
+'Challenge
+    TopPercent = Application.WorksheetFunction.Max(ws.Columns("k"))
+    LowPercent = Application.WorksheetFunction.Min(ws.Columns("k"))
+    HighVolume = Application.WorksheetFunction.Max(ws.Columns("l"))
+    'Ticker = Application.WorksheetFunction.Max(ws.Columns("k")???
+    ws.Range("p2").Value = TopPercent
+    ws.Range("p3").Value = LowPercent
+    ws.Range("p4").Value = HighVolume
+    
+    
+   Next ws
+    
+    
+   End Sub
